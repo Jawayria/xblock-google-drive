@@ -38,6 +38,7 @@ upgrade: ## update the requirements/*.txt files with the latest packages satisfy
 	pip-compile --upgrade -o requirements/quality.txt requirements/base.in requirements/quality.in requirements/test.in
 	pip-compile --upgrade -o requirements/test.txt requirements/base.in requirements/test.in
 	pip-compile --upgrade -o requirements/travis.txt requirements/travis.in
+	pip-compile --upgrade -o requirements/ci.txt requirements/ci.in
 	# Let tox control the Django version for tests
 	grep -e "^django==" requirements/test.txt > requirements/django.txt
 	sed '/^django==/d' requirements/test.txt > requirements/test.tmp
@@ -71,7 +72,7 @@ extract_translations: ## extract strings to be translated, outputting .po files
 	# Extract Python and Django template strings
 	mkdir -p locale/en/LC_MESSAGES/
 	rm -f locale/en/LC_MESSAGES/{django,text}.po
-	django-admin makemessages -l en -v1 -d django
+	django-admin makemessages -l en -v1 -d django --ignore="env_pypy/*"
 	mv locale/en/LC_MESSAGES/django.po locale/en/LC_MESSAGES/text.po
 
 compile_translations: ## compile translation files, outputting .mo files for each supported language
